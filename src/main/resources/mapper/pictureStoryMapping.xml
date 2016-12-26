@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.z.mif.dao.PictureStoryDao">
+
+	<insert id="add" parameterType="PictureStoryEObj">
+		INSERT INTO t_picture_story (`id`, `picture_name`, `title`, `content`, `tags`, `user_id`, `background_ind`, `CREATE_TIME`) VALUES 
+		(#{id},#{pictureName},#{title},#{content},#{tags},#{userId},#{backgroundInd},current_timestamp)
+	</insert>
+
+	<select id="list" parameterType="PictureStoryEObj" resultType="PictureStoryEObj">
+		select 
+			ps.`id`, 
+			ps.`picture_name` pictureName, 
+			ps.`title`,
+			ps.`content`, 
+			ps.`user_id` userId, 
+			ps.`background_ind` backgroundInd,
+			ps.`tags`,
+			ps.`CREATE_TIME` createTime,
+			su.nick_name nickName 
+		from t_picture_story ps
+		inner join sys_user su on ps.user_id = su.id
+		<where>
+			<if test="userId != null">
+				and ps.user_id = #{userId}
+			</if>
+			<if test="parameter != null and parameter != ''">
+				and (ps.content like  '%${parameter}%' or ps.title like '%${parameter}%' or ps.tags like '%${parameter}%')
+			</if>
+		</where>
+		order by ps.create_time DESC
+	</select>
+	
+	<select id="get" parameterType="PictureStoryEObj" resultType="PictureStoryEObj">
+		select 
+			ps.`id`, 
+			ps.`picture_name` pictureName, 
+			ps.`title`,
+			ps.`content`, 
+			ps.`user_id` userId, 
+			ps.`background_ind` backgroundInd,
+			ps.`tags`,
+			ps.`CREATE_TIME` createTime 
+		from t_picture_story ps
+		inner join sys_user su on ps.user_id = su.id
+		<where>
+			<if test="userId != null">
+				and ps.user_id = #{userId}
+			</if>
+			<if test="id != null and id != ''">
+				and ps.id = #{id}
+			</if>
+			<if test="parameter != null and parameter != ''">
+				and (ps.content like  '%${parameter}%' or ps.title like '%${parameter}%' or ps.tags like '%${parameter}%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="isUnId" resultType="Integer">
+		select count(1) from t_picture_story where id = #{0}
+	</select>
+</mapper>

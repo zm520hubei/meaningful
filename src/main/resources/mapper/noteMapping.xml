@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.z.mif.dao.NoteDao">
+
+	<insert id="add" parameterType="NoteEobj">
+		INSERT INTO t_note (`ID`, `USER_ID`, `CONTENT`, `CREATE_TIME`) VALUES 
+		(#{id},#{userId},#{content},current_timestamp)
+	</insert>
+
+	<select id="list" parameterType="NoteEobj" resultType="NoteEobj">
+		select 
+			n.`id`, 
+			n.`content`, 
+			n.`user_id` userId, 
+			n.`CREATE_TIME` createTime,
+			su.nick_name nickName 
+		from t_note n
+		inner join sys_user su on n.user_id = su.id
+		<where>
+			<if test="userId != null">
+				n.user_id = #{userId}
+			</if>
+			<if test="parameter != null and parameter != ''">
+				and n.content like  '%${parameter}%'
+			</if>
+		</where>
+		order by n.create_time DESC
+	</select>
+	
+	<select id="get" parameterType="NoteEobj" resultType="NoteEobj">
+		select 
+			n.`id`, 
+			n.`content`, 
+			n.`user_id` userId, 
+			n.`CREATE_TIME` createTime,
+			su.nick_name nickName 
+		from t_note n
+		inner join sys_user su on n.user_id = su.id
+		<where>
+			<if test="id != null and id != ''">
+				n.id = #{id}
+			</if>
+			<if test="userId != null">
+				and n.user_id = #{userId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="isUnId" resultType="Integer">
+		select count(1) from t_note where id = #{0}
+	</select>
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans    
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                        http://www.springframework.org/schema/mvc    
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                       ">
+	
+	<context:property-placeholder location="classpath:jdbc.properties,classpath:mail.properties"/>  
+	<bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		<property name="initialSize" value="${initialSize}"></property>
+		<property name="maxActive" value="${maxActive}"></property>
+		<property name="maxIdle" value="${maxIdle}"></property>
+		<property name="minIdle" value="${minIdle}"></property>
+		<property name="maxWait" value="${maxWait}"></property>
+		<property name="validationQuery" value="${test}"></property> 
+	</bean>
+
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">  
+        <constructor-arg ref="dataSourceSpied" />  
+    </bean>
+    
+	<bean id="pageInterceptor" class="com.z.mif.interceptor.PageInterceptor"/>
+	
+	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+<!-- 		<property name="configLocation" value="classpath:mybatis-config.xml"/> -->
+		   <!-- 扫描entity包 使用别名 -->
+        <property name="typeAliasesPackage" value="com.z.mif.entity"/>
+		 <!-- 扫描sql配置文件:mapper需要的xml文件 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+        <property name="plugins">
+            <ref bean="pageInterceptor" />
+        </property>
+	</bean>
+	
+
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.z.mif.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	
+	 <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">  
+	     <property name="host" value="${mail.host}"/>  
+	     <property name="javaMailProperties">  
+	            <props>  
+	              <prop key="mail.smtp.auth">true</prop>  
+	              <prop key="mail.smtp.timeout">25000</prop>  
+	            </props>  
+	        </property>     
+	     <property name="username" value="${mail.username}"/>  
+	     <property name="password" value="${mail.password}" />  
+    </bean>  
+     <bean id="simpleMailMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="zhengmeng@yingfan.org" />
+        <property name="subject" value="验证码" />
+    </bean>
+    
+    <!--FreeMarker模板-->
+    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="classpath:template" />
+<!--         <property name="templateLoaderPath" value="/template" /> -->
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="locale">zh_CN</prop>
+                <prop key="default_encoding">UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+	
+	
+</beans> 

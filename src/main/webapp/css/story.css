@@ -1,0 +1,84 @@
+.waterfull{
+	width:90%;
+ 	margin: 0px 5% 0px 5%; 
+	position: relative;
+}
+.waterfull img {
+	width:310px;
+	vertical-align: middle;
+/* 	border: 1px gray solid; */
+}
+
+.waterfull li {
+	float: left;
+	list-style: none;
+	box-shadow: 0 0 10px #999; 
+	padding:5px;
+}
+.waterfull h3 {
+	font-size: 20px;
+	margin: 5px 0 10px;
+}
+
+.waterfull p {
+	font-weight: 300;
+	line-height: 20px;
+	font-size: 14px;
+	margin-bottom: 15px;
+	height: 80%;
+}
+
+.waterfull .btn {
+	display: inline-block;
+	padding: 5px 10px;
+	font-size: 14px;
+	color: #fff;
+	border: 2px solid #1BBC9B;
+	background-color: #1BBC9B;
+	text-decoration: none;
+	transition: 0.4s;
+	z-index: 990;
+	border-radius: 5px;
+}
+
+.waterfull .btn:hover {
+	background-color: #4d92d9;
+	color: #fff;
+	transition: 0.4s;
+}
+
+.waterfull .text-desc {
+	position: absolute;
+	background-color: #fff;
+}
+.waterfull .text-desc a{
+	position: absolute;
+	bottom:50px;
+	left: 37%;
+}
+
+/*= Reset CSS End
+================= *
+
+
+/* effect-2 css */
+.port-1{float: left; position: relative; overflow: hidden; text-align: center; border: 4px solid rgba(255, 255, 255, 0.9);}
+.port-1 .text-desc{opacity: 0.7; transition: 0.5s; color: #000;}
+.port-1 img{transition: 0.5s;}
+.port-1:hover img{transform: scale(1.2);}
+
+.port-1.effect-1:hover .text-desc{top: 0;}
+
+.port-1.effect-2 .text-desc{top: auto;}
+.port-1.effect-2:hover .text-desc{bottom: 0;}
+
+.port-1.effect-3 .text-desc{top: 50%; left: 50%; width: 0; height: 0; overflow: hidden; padding: 0;}
+.port-1.effect-3:hover .text-desc{width: 90%; top: 0; left: 0; height: 100%; padding:0 5%; overflow: hidden;}
+.box .extend{font-size: 12px;color:#999;width: 318px;}
+.box .auth{width: 43%;text-align: right;padding:1%;line-height: 42px;height: 42px;overflow: hidden;}
+.box .auth a{color:#1BBC9B}
+.box .labs{width: 53%;text-align: left;padding:1%;height: 42px;line-height: 21px;overflow: hidden;}
+.box .auth img{
+	width: 35px;height: 35px;border-radius:50%;
+}
+/* effect-2 css end */

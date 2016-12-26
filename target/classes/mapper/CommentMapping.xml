@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.z.mif.dao.CommentDao">
+
+	<select id="recursion" resultType="CommentEObj">
+		call pro_getComment(#{0});
+	</select>
+	
+	<select id="Unread" resultType="Integer">
+		SELECT sum(u) FROM (
+		<!-- #查询评论或回复的未读跟帖 -->
+		SELECT count(1) u from t_comment WHERE PARENT_ID in (
+			SELECT ID from t_comment WHERE USER_ID = #{0}
+		) and `READ` = 'N' and USER_ID != #{0}<!-- #自己回复自己的不�?-->
+		UNION
+		<!-- #查询发表的故事的未读评论 -->
+		SELECT count(1) u from t_picture_story ps INNER JOIN t_comment c on ps.id = c.STORY_ID 
+		and c.PARENT_ID = 0 and c.`READ` = 'N' 
+		and c.USER_ID != #{0} <!-- #自己评论自己的不�?-->
+		WHERE ps.user_id = #{0}
+		) t
+	</select>
+	
+	<select id="get" parameterType="CommentEObj" resultType="CommentEObj">
+		select c.`ID`, c.`STORY_ID` storyId, c.`PARENT_ID` parentId, c.`USER_ID` userId, c.`CONTENT`, c.`CREATE_TIME` createTime,
+			u.nick_name nickName,u.head_name headName from 
+		t_comment c inner join sys_user u on c.user_id = u.id
+		<where>
+			<if test="id != null">
+				c.id = #{id}
+			</if>
+			<if test="storyId != null">
+				and c.story_id = #{storyId}
+			</if>
+			<if test="parentId != null">
+				and c.parent_id = #{parentId}
+			</if>
+			<if test="userId != null">
+				and c.user_id = #{userId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="list" parameterType="CommentEObj" resultType="CommentEObj">
+		select c.`ID`, c.`STORY_ID` storyId, c.`PARENT_ID` parentId, c.`USER_ID` userId, c.`CONTENT`, c.`CREATE_TIME` createTime,
+			u.nick_name nickName,u.head_name headName from 
+		t_comment c inner join sys_user u on c.user_id = u.id
+		<where>
+			<if test="id != null">
+				c.id = #{id}
+			</if>
+			<if test="storyId != null">
+				and c.story_id = #{storyId}
+			</if>
+			<if test="parentId != null">
+				and c.parent_id = #{parentId}
+			</if>
+			<if test="userId != null">
+				and c.user_id = #{userId}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="add" parameterType="CommentEObj">
+		INSERT INTO t_comment (`STORY_ID`, `PARENT_ID`, `USER_ID`, `CONTENT`, `READ`, `CREATE_TIME`) VALUES
+		(#{storyId},#{parentId},#{userId},#{content},#{read},current_timestamp)
+	</insert>
+</mapper>

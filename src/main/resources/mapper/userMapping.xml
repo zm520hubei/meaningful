@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.z.mif.dao.UserDao">
+
+	<insert id="add" parameterType="UserEObj">
+		INSERT INTO sys_user (`NICK_NAME`,`PASSWORD`, `HEAD_NAME`, `CELLPHONE`, `EMAIL`, `CREATE_TIME`) VALUES
+		(#{nickName},#{password},'defaultHead.jpg',#{cellphone},#{email},current_timestamp)
+	</insert>
+
+	<select id="get" parameterType="UserEObj" resultType="UserEObj">
+		select `ID`, `NICK_NAME` nickName, `SEX`, `city_id` cityId, `PASSWORD`, `HEAD_NAME` headName,`CELLPHONE`, `EMAIL`, `CREATE_TIME` createTime
+		from sys_user
+		<where>
+			<if test="id != null">
+				id = #{id}
+			</if>
+			<if test="loginParam != null and loginParam != ''">
+				and (CELLPHONE = #{loginParam} or EMAIL = #{loginParam})
+			</if>
+			<if test="nickName != null and nickName != ''">
+				and nick_name = #{nickName}
+			</if>
+			<if test="password != null and password != ''">
+				and PASSWORD = #{password}
+			</if>
+			<if test="cellphone != null and cellphone != ''">
+				and cellphone = #{cellphone}
+			</if>
+			<if test="email != null and email != ''">
+				and email = #{email}
+			</if>
+		</where>
+	</select>
+	
+	<select id="list" parameterType="UserEObj" resultType="UserEObj">
+		select `ID`, `NICK_NAME` nickName, `SEX`, `city_id` cityId, `PASSWORD`, `HEAD_NAME` headName,`CELLPHONE`, `EMAIL`, `CREATE_TIME` createTime
+		from sys_user
+		<where>
+			<if test="id != null">
+				id = #{id}
+			</if>
+			<if test="loginParam != null and loginParam != ''">
+				and (CELLPHONE = #{loginParam} or EMAIL = #{loginParam})
+			</if>
+			<if test="nickName != null and nickName != ''">
+				and nick_name = #{nickName}
+			</if>
+			<if test="password != null and password != ''">
+				and PASSWORD = #{password}
+			</if>
+			<if test="cellphone != null and cellphone != ''">
+				and cellphone = #{cellphone}
+			</if>
+			<if test="email != null and email != ''">
+				and email = #{email}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getInsertId" resultType="Integer">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+	<update id="update" parameterType="UserEObj">
+		update sys_user
+		<trim prefix="set" suffixOverrides=",">
+			<if test="nickName != null and nickName != ''">
+				nick_name = #{nickName},
+			</if>
+			<if test="sex != null and sex != ''">
+				sex = #{sex},
+			</if>
+			<if test="cityId != null">
+				city_id = #{cityId},
+			</if>
+			<if test="password != null and password != ''">
+				password = #{password},
+			</if>
+			<if test="headName != null and headName != ''">
+				head_name = #{headName},
+			</if>
+			<if test="cellphone != null and cellphone != ''">
+				cellphone = #{cellphone},
+			</if>
+			<if test="email != null and email != ''">
+				email = #{email},
+			</if>
+		</trim>
+		where id = #{id}
+	</update>
+
+	<update id="updatePwd" parameterType="UserEObj">
+		update sys_user set password = #{password}
+		<where>
+			<if test="loginParam != null and loginParam != ''">
+				cellphone = #{loginParam} or email = #{loginParam}
+			</if>
+		</where>
+	</update>
+</mapper>
